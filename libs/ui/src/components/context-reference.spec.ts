@@ -167,6 +167,10 @@ function remoteCtx(opts: {
                       : Promise.reject(new Error('404: no access policy')),
             describeAccessMarking: () => Promise.resolve(undefined),
         } as never,
+        // ContextReference loads the crosswalk inventory during setup. Keep
+        // this remote double complete so a successful remote mount does not
+        // hide a missing-method TypeError behind the component's error log.
+        describeCrosswalks: () => Promise.resolve([]),
         describeSchemes: () => Promise.resolve([]),
         audit: () => Promise.resolve({} as never),
         checkContextAccess: () => Promise.resolve({} as never),
@@ -312,21 +316,30 @@ describe('ContextReference', () => {
         });
 
         it('shows access synchronously for a full remote context', async () => {
-            component.init(
-                container,
-                remoteCtx({ guides: 1, access: 'rules' }),
-            );
-            expect(tabIds(container)).toEqual([
-                'handbook',
-                'guidebook',
-                'access',
-            ]);
-            await flush();
-            expect(tabIds(container)).toEqual([
-                'handbook',
-                'guidebook',
-                'access',
-            ]);
+            const remote = remoteCtx({ guides: 1, access: 'rules' });
+            const crosswalkProbe = vi.spyOn(remote, 'describeCrosswalks');
+            const error = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
+
+            try {
+                await component.init(container, remote);
+                expect(tabIds(container)).toEqual([
+                    'handbook',
+                    'guidebook',
+                    'access',
+                ]);
+                await flush();
+                expect(tabIds(container)).toEqual([
+                    'handbook',
+                    'guidebook',
+                    'access',
+                ]);
+                expect(crosswalkProbe).toHaveBeenCalledTimes(1);
+                expect(error).not.toHaveBeenCalled();
+            } finally {
+                error.mockRestore();
+            }
         });
 
         it('resolves the async guide surface into its panel', async () => {
