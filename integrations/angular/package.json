@@ -1,6 +1,6 @@
 {
     "name": "@ezclassify/angular",
-    "version": "1.0.0-dev.30",
+    "version": "1.0.0-rc.0",
     "type": "module",
     "description": "Angular integration components for the ezclassify classification engine",
     "repository": {

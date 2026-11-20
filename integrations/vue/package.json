@@ -1,6 +1,6 @@
 {
     "name": "@ezclassify/vue",
-    "version": "1.0.0-dev.30",
+    "version": "1.0.0-rc.0",
     "type": "module",
     "description": "Vue 3 integration for the EzClassify marking engine",
     "repository": {

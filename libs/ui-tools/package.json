@@ -1,6 +1,6 @@
 {
     "name": "@ezclassify/ui-tools",
-    "version": "1.0.0-dev.30",
+    "version": "1.0.0-rc.0",
     "type": "module",
     "description": "Playwright/browser test tooling: crawler runtime (browser, a11y, baselines, run-loop) plus HTTP record and replay with fetch and Playwright route transports",
     "repository": {
